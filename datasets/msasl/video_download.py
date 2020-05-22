@@ -75,3 +75,7 @@ def download_videos():
     """
     for url in _video_urls():
         _download_video(url)
+
+
+if __name__ == '__main__':
+    download_videos()
