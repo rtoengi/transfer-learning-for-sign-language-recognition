@@ -4,5 +4,8 @@ _MSASL_DIR = 'D:/datasets/msasl'
 # Directory of the `MS-ASL` dataset specification files
 _MSASL_SPECS_DIR = f'{_MSASL_DIR}/specs'
 
+# Directory of the filtered `MS-ASL` dataset specification files
+_MSASL_FILTERED_SPECS_DIR = f'{_MSASL_DIR}/filtered_specs'
+
 # Directory of the `MS-ASL` downloaded YouTube videos
 _MSASL_VIDEOS_DIR = f'{_MSASL_DIR}/videos'
