@@ -5,7 +5,7 @@ from logging import error
 import youtube_dl as ydl
 from youtube_dl.utils import DownloadError
 
-from datasets.constants import DATASET_NAMES, _MSASL_DIR, _MSASL_VIDEOS_DIR
+from datasets.constants import DATASET_NAMES, _MSASL_SPECS_DIR, _MSASL_VIDEOS_DIR
 
 
 def _video_urls():
@@ -18,7 +18,7 @@ def _video_urls():
     """
     urls = set()
     for dataset_name in DATASET_NAMES:
-        with open(f'{_MSASL_DIR}/MSASL_{dataset_name}.json', 'r') as file:
+        with open(f'{_MSASL_SPECS_DIR}/MSASL_{dataset_name}.json', 'r') as file:
             dataset = json.load(file)
         urls = urls.union({it['url'] for it in dataset})
     return {url for url in urls if _extract_video_id(url) not in _downloaded_video_ids()}
