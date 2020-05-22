@@ -5,7 +5,8 @@ from logging import error
 import youtube_dl as ydl
 from youtube_dl.utils import DownloadError
 
-from datasets.constants import DATASET_NAMES, _MSASL_SPECS_DIR, _MSASL_VIDEOS_DIR
+from datasets.constants import DATASET_NAMES
+from datasets.msasl.constants import _MSASL_SPECS_DIR, _MSASL_VIDEOS_DIR
 
 
 def _video_urls():
