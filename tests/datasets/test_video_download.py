@@ -1,4 +1,4 @@
-from datasets.msasl import _extract_video_id
+from datasets.msasl.video_download import _extract_video_id
 
 
 def test__extract_video_id():
