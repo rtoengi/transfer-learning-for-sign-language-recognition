@@ -1,4 +1,5 @@
 import json
+import logging
 from pathlib import Path
 
 import cv2
@@ -69,7 +70,8 @@ def read_frames(example):
     for pos in positions:
         cap.set(cv2.CAP_PROP_POS_FRAMES, pos - 1)
         _, frame = cap.read()
-        cropped_frame = _crop_image_to_square(frame, _center_ratios(example['box']))
+        center_x_ratio, center_y_ratio = _center_ratios(example['box'])
+        cropped_frame = _crop_image_to_square(frame, center_x_ratio, center_y_ratio)
         _, buffer = cv2.imencode('.jpg', cv2.resize(cropped_frame, _FRAME_SIZE))
         frames.append(buffer.tobytes())
     cap.release()
@@ -108,19 +110,25 @@ def write_tf_records():
             dataset = json.load(file)
         writer = None
         running_file_number = 0
+        running_record_number = 0
         Path(f'{MSASL_TF_RECORDS_DIR}/{dataset_name}').mkdir(exist_ok=True)
         for i, example in enumerate(dataset):
             if i % _TF_RECORD_SHARD_SIZE == 0:
                 if writer:
                     writer.close()
+                    logging.info(f'{running_record_number} records have been written to {file_name}.')
+                    running_record_number = 0
                 running_file_number += 1
                 file_name = f'{MSASL_TF_RECORDS_DIR}/{dataset_name}/{dataset_name}_{running_file_number:02d}.tfrecord'
                 writer = tf.io.TFRecordWriter(file_name)
             serialized_example = serialize_example(example)
             writer.write(serialized_example)
+            running_record_number += 1
         if writer:
             writer.close()
+            logging.info(f'{running_record_number} records have been written to {file_name}.')
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     write_tf_records()
