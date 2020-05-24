@@ -41,7 +41,7 @@ def _extract_video_id(url=''):
 def _downloaded_video_ids():
     """Returns the IDs of videos that have already been downloaded.
 
-    Can be utilized to prevent the re-downloading of videos when the download process is executed multiple times.
+    Can be utilized to prevent the re-downloading of videos in case the download process is executed multiple times.
 
     Returns:
         The set of IDs of videos that have already been downloaded.
@@ -70,8 +70,8 @@ def download_videos():
     """Downloads the `MS-ASL` YouTube videos.
 
     The `MS-ASL` dataset consists of URLs of YouTube videos. Such a video may contain multiple sign gestures, which
-    means that different dataset examples may refer to the same video. This function downloads all the videos in the
-    train, validation and test dataset files into the `_MSASL_VIDEOS_DIR` directory.
+    means that different dataset examples may refer to the same video. This function downloads all the videos of the
+    train, validation and test dataset specification files into the `_MSASL_VIDEOS_DIR` directory.
     """
     for url in _video_urls():
         _download_video(url)
