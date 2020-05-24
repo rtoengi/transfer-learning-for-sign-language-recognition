@@ -15,7 +15,7 @@ def _video_urls():
     All the URLs in the train, validation and test dataset files of the `MS-ASL` dataset are taken into account.
 
     Returns:
-        set<string>: The set of URLs of videos that have not yet been downloaded.
+        The set of URLs of videos that have not yet been downloaded.
     """
     urls = set()
     for dataset_name in DATASET_NAMES:
@@ -29,10 +29,10 @@ def _extract_video_id(url=''):
     """Extracts the video ID from a YouTube URL.
 
     Args:
-        url (string): A string representing a YouTube URL (e.g. 'https://www.youtube.com/watch?v=S2cqitZ0qes').
+        url: A string representing a YouTube URL (e.g. 'https://www.youtube.com/watch?v=S2cqitZ0qes').
 
     Returns:
-        string: The video ID of a YouTube URL (e.g. 'S2cqitZ0qes').
+        The video ID of a YouTube URL (e.g. 'S2cqitZ0qes').
     """
     index = url.index('?v=') + 3
     return url[index:]
@@ -44,7 +44,7 @@ def _downloaded_video_ids():
     Can be utilized to prevent the re-downloading of videos when the download process is executed multiple times.
 
     Returns:
-        set<string>: The set of IDs of videos that have already been downloaded.
+        The set of IDs of videos that have already been downloaded.
     """
     videos = os.listdir(_MSASL_VIDEOS_DIR)
     return set([video[:-4] for video in videos])
@@ -56,7 +56,7 @@ def _download_video(url):
     The video is stored into the `_MSASL_VIDEOS_DIR` directory.
 
     Args:
-        url (string): A string representing a YouTube URL.
+        url: A string representing a YouTube URL.
     """
     ydl_opts = {'outtmpl': _MSASL_VIDEOS_DIR + '/%(id)s.%(ext)s'}
     with ydl.YoutubeDL(ydl_opts) as video:
