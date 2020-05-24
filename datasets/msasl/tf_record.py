@@ -1,0 +1,126 @@
+import json
+from pathlib import Path
+
+import cv2
+import numpy as np
+import tensorflow as tf
+
+from datasets.constants import DATASET_NAMES, _N_TIME_STEPS, _TF_RECORD_SHARD_SIZE
+from datasets.constants import _FRAME_SIZE
+from datasets.msasl.constants import _MSASL_FILTERED_SPECS_DIR, _MSASL_VIDEOS_DIR, MSASL_TF_RECORDS_DIR
+from datasets.msasl.video_download import _extract_video_id
+from datasets.tf_record_utils import _bytes_feature, _int64_feature
+from datasets.utils import _crop_image_to_square
+
+
+def _frame_positions(start, end):
+    """Samples frame numbers in the range between `start` and `end`.
+
+    `_N_TIME_STEPS` number of samples are drawn uniformly in the range between `start` and `end`. If `_N_TIME_STEPS` is
+    greater than the range that is drawn from, then sampling is done with replacement. The samples are sorted in
+    ascending order.
+
+    Args:
+        start: The start frame number.
+        end: The end frame number.
+
+    Returns:
+        The sorted array of frame numbers between `start` and `end`.
+    """
+    range_ = end - start + 1
+    positions = np.random.choice(range_, _N_TIME_STEPS, replace=range_ < _N_TIME_STEPS) + start
+    positions.sort()
+    return positions
+
+
+def _center_ratios(box):
+    """Calculates the center of the bounding box.
+
+    The bounding box has the format [y0, x0, y1, x1], where (x0, y0) is the upper-left corner and (x1, y1) is the
+    bottom-right corner. The coordinates are normalized into the range between 0 and 1.
+
+    Args:
+        box: The bounding box surrounding the signer in an image.
+
+    Returns:
+        The relative abscissa and ordinate of the center of the bounding box.
+    """
+    x = (box[1] + box[3]) / 2
+    y = (box[0] + box[2]) / 2
+    return x, y
+
+
+def read_frames(example):
+    """Reads the individual frames from the corresponding YouTube video.
+
+    A frame is encoded as a compressed JPEG image instead of an ndarray, as the latter consumes up to 10 times as much
+    storage space.
+
+    Args:
+        example: An example from a dataset specification file.
+
+    Returns:
+        The list of frames of the dataset example.
+    """
+    frames = []
+    path = f"{_MSASL_VIDEOS_DIR}/{_extract_video_id(example['url'])}.mp4"
+    cap = cv2.VideoCapture(path)
+    positions = _frame_positions(example['start'], example['end'])
+    for pos in positions:
+        cap.set(cv2.CAP_PROP_POS_FRAMES, pos - 1)
+        _, frame = cap.read()
+        cropped_frame = _crop_image_to_square(frame, _center_ratios(example['box']))
+        _, buffer = cv2.imencode('.jpg', cv2.resize(cropped_frame, _FRAME_SIZE))
+        frames.append(buffer.tobytes())
+    cap.release()
+    return frames
+
+
+def serialize_example(example):
+    """Serializes a dataset example in the `TFRecord` format.
+
+    Args:
+        example: An example from a dataset specification file.
+
+    Returns:
+        The binary string representation of the `TFRecord`.
+    """
+    frames = read_frames(example)
+    feature = {
+        'frames': _bytes_feature(frames),
+        'label': _int64_feature([example['label']]),
+        'signer': _int64_feature([example['signer_id']])
+    }
+    tf_example = tf.train.Example(features=tf.train.Features(feature=feature))
+    return tf_example.SerializeToString()
+
+
+def write_tf_records():
+    """Creates the `TFRecord` files of the `MS-ASL` train, validation and test datasets.
+
+    The `TFRecord` files of the train, validation and test datasets are stored into corresponding subdirectories inside
+    the `MSASL_TF_RECORDS_DIR` directory. The examples of each of the train, validation and test datasets are sharded
+    into multiple `TFRecord` files. The number of examples a single `TFRecord` file contains is set by the
+    `_TF_RECORD_SHARD_SIZE` constant.
+    """
+    for dataset_name in DATASET_NAMES:
+        with open(f'{_MSASL_FILTERED_SPECS_DIR}/{dataset_name}.json', 'r') as file:
+            dataset = json.load(file)
+        writer = None
+        running_file_number = 0
+        Path(f'{MSASL_TF_RECORDS_DIR}/{dataset_name}').mkdir(exist_ok=True)
+        for i, example in enumerate(dataset):
+            if i % _TF_RECORD_SHARD_SIZE == 0:
+                if writer:
+                    writer.close()
+                running_file_number += 1
+                file_name = f'{MSASL_TF_RECORDS_DIR}/{dataset_name}/{dataset_name}_{running_file_number:02d}.tfrecord'
+                writer = tf.io.TFRecordWriter(file_name)
+            serialized_example = serialize_example(example)
+            writer.write(serialized_example)
+        if writer:
+            writer.close()
+
+
+if __name__ == '__main__':
+    write_tf_records()

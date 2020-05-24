@@ -9,3 +9,6 @@ _MSASL_FILTERED_SPECS_DIR = f'{_MSASL_DIR}/filtered_specs'
 
 # Directory of the `MS-ASL` downloaded YouTube videos
 _MSASL_VIDEOS_DIR = f'{_MSASL_DIR}/videos'
+
+# Directory of the `MS-ASL` train, validation and test `TFRecord` files
+MSASL_TF_RECORDS_DIR = f'{_MSASL_DIR}/tf_records'
