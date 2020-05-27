@@ -1,9 +1,24 @@
+import os
+
 import cv2
 import numpy as np
 import tensorflow as tf
 
 # from tensorflow.keras.applications.inception_v3 import preprocess_input
 from datasets.constants import _N_TIME_STEPS
+from datasets.msasl.constants import MSASL_TF_RECORDS_DIR
+
+
+def tf_record_dataset(dataset_name, ordered=False):
+    path = f'{MSASL_TF_RECORDS_DIR}/{dataset_name}'
+    files = [f'{path}/{file}' for file in os.listdir(path)]
+    num_parallel_reads = 1 if ordered else tf.data.experimental.AUTOTUNE
+    dataset = tf.data.TFRecordDataset(files, num_parallel_reads=num_parallel_reads)
+    if not ordered:
+        options = tf.data.Options()
+        options.experimental_deterministic = False
+        dataset = dataset.with_options(options)
+    return dataset
 
 
 def _bytes_feature(bytes_list):
