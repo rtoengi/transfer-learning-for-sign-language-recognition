@@ -6,7 +6,6 @@ import tensorflow as tf
 
 from datasets.constants import DatasetName, DatasetType
 from datasets.constants import _N_TIME_STEPS
-# from tensorflow.keras.applications.inception_v3 import preprocess_input
 from datasets.utils import _tf_records_dir
 
 
@@ -60,26 +59,91 @@ def _int64_feature(int64_list):
 
 
 def _decode_jpeg(bytestring):
-    img = np.frombuffer(bytestring, np.uint8)
-    return cv2.imdecode(img, cv2.IMREAD_COLOR)
+    """Decodes a compressed JPEG image into an ndarray.
+
+    Arguments:
+        bytestring: The binary string representation of the compressed JPEG image.
+
+    Returns:
+        The ndarray representation of the image using the uint8 data type for the channel values.
+    """
+    image = np.frombuffer(bytestring, np.uint8)
+    return cv2.imdecode(image, cv2.IMREAD_COLOR)
 
 
-def _decode_frames(examples):
+def _transform_frames_for_inspection(examples):
+    """Transforms a batch of example frames to be consumed for inspection.
+
+    An individual frame is a 3D tensor consisting of RGB uint8 values within [0, 255] represented in the `channels_last`
+    data format ([height, width, channels]).
+
+    Arguments:
+        examples: A 5D tensor representing a batch of example frames in the [batch, frames, height, width, channels]
+        format.
+
+    Returns:
+        The transformed batch of example frames.
+    """
     return np.array([[_decode_jpeg(frame) for frame in example] for example in examples.numpy()])
 
 
-_features = {
+def _transform_frames_for_model(examples):
+    """Transforms a batch of example frames to be consumed by a model.
+
+    An individual frame is a 3D tensor consisting of RGB float32 values within [-1.0, 1.0] represented in the
+    `channels_last` data format ([height, width, channels]).
+
+    Arguments:
+        examples: A 5D tensor representing a batch of example frames in the [batch, frames, height, width, channels]
+        format.
+
+    Returns:
+        The transformed batch of example frames.
+    """
+    frames = np.array([[_decode_jpeg(frame) for frame in example] for example in examples.numpy()])
+    frames = frames.astype(np.float32, copy=False)
+    frames /= 127.5
+    frames -= 1.0
+    return frames
+
+
+_FEATURES = {
     'frames': tf.io.FixedLenFeature([_N_TIME_STEPS], tf.string),
     'label': tf.io.FixedLenFeature([], tf.int64),
     'signer': tf.io.FixedLenFeature([], tf.int64)
 }
 
 
-def _parse_examples(examples):
-    parsed_examples = tf.io.parse_example(examples, _features)
+def transform_for_inspection(examples):
+    """Transforms a batch of examples to be consumed for inspection.
 
-    frames = tf.py_function(_decode_frames, [parsed_examples['frames']], tf.uint8)
+    Arguments:
+        examples: A batch of serialized `TFRecord` examples.
+
+    Returns:
+        A tuple of batches of frames, labels and signers.
+    """
+    parsed_examples = tf.io.parse_example(examples, _FEATURES)
+
+    frames = tf.py_function(_transform_frames_for_inspection, [parsed_examples['frames']], tf.uint8)
     labels = parsed_examples['label']
     signers = parsed_examples['signer']
 
     return frames, labels, signers
+
+
+def transform_for_model(examples):
+    """Transforms a batch of examples to be consumed by a model.
+
+    Arguments:
+        examples: A batch of serialized `TFRecord` examples.
+
+    Returns:
+        A tuple of batches of frames and labels.
+    """
+    parsed_examples = tf.io.parse_example(examples, _FEATURES)
+
+    frames = tf.py_function(_transform_frames_for_model, [parsed_examples['frames']], tf.float32)
+    labels = parsed_examples['label']
+
+    return frames, labels

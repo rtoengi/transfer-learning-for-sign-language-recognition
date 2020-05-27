@@ -1,7 +1,7 @@
 import cv2
 
 from datasets.constants import DatasetName, DatasetType
-from datasets.tf_record_utils import tf_record_dataset, _parse_examples
+from datasets.tf_record_utils import tf_record_dataset, transform_for_inspection
 
 
 def _display_images(images):
@@ -12,11 +12,11 @@ def _display_images(images):
 
 def inspect_dataset():
     dataset = tf_record_dataset(DatasetName.MSASL, DatasetType.TRAIN)
-    dataset = dataset.batch(2)
-    dataset = dataset.map(_parse_examples)
+    dataset = dataset.batch(1)
+    dataset = dataset.map(transform_for_inspection)
     for frames, labels, signers in dataset.take(1):
         frames = frames.numpy()
-        _display_images(frames[0])
+        _display_images(frames[0][0:1])
 
 
 if __name__ == '__main__':
