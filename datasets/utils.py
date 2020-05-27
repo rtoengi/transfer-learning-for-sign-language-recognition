@@ -12,7 +12,7 @@ def _crop_image_to_square(image, center_x_ratio=0.5, center_y_ratio=0.5):
     around the center ratios exceed the boundaries of the image, then the cropping sticks to the corresponding boundary.
     A square image is left unchanged.
 
-    Args:
+    Arguments:
         image: The ndarray image to be cropped.
         center_x_ratio: The relative abscissa the horizontal cropping is centered around (float between 0 and 1).
         center_y_ratio: The relative ordinate the vertical cropping is centered around (float between 0 and 1).

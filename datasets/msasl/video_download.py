@@ -28,7 +28,7 @@ def _video_urls():
 def _extract_video_id(url=''):
     """Extracts the video ID from a YouTube URL.
 
-    Args:
+    Arguments:
         url: A string representing a YouTube URL (e.g. 'https://www.youtube.com/watch?v=S2cqitZ0qes').
 
     Returns:
@@ -55,7 +55,7 @@ def _download_video(url):
 
     The video is stored into the `_MSASL_VIDEOS_DIR` directory.
 
-    Args:
+    Arguments:
         url: A string representing a YouTube URL.
     """
     ydl_opts = {'outtmpl': _MSASL_VIDEOS_DIR + '/%(id)s.%(ext)s'}

@@ -21,7 +21,7 @@ def _frame_positions(start, end):
     greater than the range that is drawn from, then sampling is done with replacement. The samples are sorted in
     ascending order.
 
-    Args:
+    Arguments:
         start: The start frame number.
         end: The end frame number.
 
@@ -40,7 +40,7 @@ def _center_ratios(box):
     The bounding box has the format [y0, x0, y1, x1], where (x0, y0) is the upper-left corner and (x1, y1) is the
     bottom-right corner. The coordinates are normalized into the range between 0 and 1.
 
-    Args:
+    Arguments:
         box: The bounding box surrounding the signer in an image.
 
     Returns:
@@ -57,7 +57,7 @@ def read_frames(example):
     A frame is encoded as a compressed JPEG image instead of an ndarray, as the latter consumes up to 10 times as much
     storage space.
 
-    Args:
+    Arguments:
         example: An example from a dataset specification file.
 
     Returns:
@@ -81,7 +81,7 @@ def read_frames(example):
 def serialize_example(example):
     """Serializes a dataset example in the `TFRecord` format.
 
-    Args:
+    Arguments:
         example: An example from a dataset specification file.
 
     Returns:
