@@ -1,6 +1,6 @@
 import json
 
-from datasets.constants import DATASET_NAMES
+from datasets.constants import DatasetType
 from datasets.msasl.constants import _MSASL_SPECS_DIR, _MSASL_FILTERED_SPECS_DIR
 from datasets.msasl.video_download import _downloaded_video_ids, _extract_video_id
 
@@ -13,11 +13,11 @@ def create_filtered_specs():
     directory.
     """
     videos = _downloaded_video_ids()
-    for dataset_name in DATASET_NAMES:
-        with open(f'{_MSASL_SPECS_DIR}/MSASL_{dataset_name}.json', 'r') as input:
+    for dataset_type in DatasetType:
+        with open(f'{_MSASL_SPECS_DIR}/MSASL_{dataset_type.value}.json', 'r') as input:
             dataset = json.load(input)
             filtered_dataset = [it for it in dataset if _extract_video_id(it['url']) in videos]
-            with open(f'{_MSASL_FILTERED_SPECS_DIR}/{dataset_name}.json', 'w', encoding='utf-8') as output:
+            with open(f'{_MSASL_FILTERED_SPECS_DIR}/{dataset_type.value}.json', 'w', encoding='utf-8') as output:
                 output.write('[' + ',\n'.join(json.dumps(it) for it in filtered_dataset) + ']')
 
 

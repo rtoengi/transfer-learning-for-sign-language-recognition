@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-from datasets.constants import DATASET_NAMES, _N_TIME_STEPS, _TF_RECORD_SHARD_SIZE
+from datasets.constants import DatasetType, _N_TIME_STEPS, _TF_RECORD_SHARD_SIZE
 from datasets.constants import _FRAME_SIZE
 from datasets.msasl.constants import _MSASL_FILTERED_SPECS_DIR, _MSASL_VIDEOS_DIR, MSASL_TF_RECORDS_DIR
 from datasets.msasl.video_download import _extract_video_id
@@ -105,13 +105,13 @@ def write_tf_records():
     into multiple `TFRecord` files. The number of examples a single `TFRecord` file contains is set by the
     `_TF_RECORD_SHARD_SIZE` constant.
     """
-    for dataset_name in DATASET_NAMES:
-        with open(f'{_MSASL_FILTERED_SPECS_DIR}/{dataset_name}.json', 'r') as file:
+    for dataset_type in DatasetType:
+        with open(f'{_MSASL_FILTERED_SPECS_DIR}/{dataset_type.value}.json', 'r') as file:
             dataset = json.load(file)
         writer = None
         running_file_number = 0
         running_record_number = 0
-        Path(f'{MSASL_TF_RECORDS_DIR}/{dataset_name}').mkdir(exist_ok=True)
+        Path(f'{MSASL_TF_RECORDS_DIR}/{dataset_type.value}').mkdir(exist_ok=True)
         for i, example in enumerate(dataset):
             if i % _TF_RECORD_SHARD_SIZE == 0:
                 if writer:
@@ -119,7 +119,7 @@ def write_tf_records():
                     logging.info(f'{running_record_number} records have been written to {file_name}.')
                     running_record_number = 0
                 running_file_number += 1
-                file_name = f'{MSASL_TF_RECORDS_DIR}/{dataset_name}/{dataset_name}_{running_file_number:02d}.tfrecord'
+                file_name = f'{MSASL_TF_RECORDS_DIR}/{dataset_type.value}/{dataset_type.value}_{running_file_number:02d}.tfrecord'
                 writer = tf.io.TFRecordWriter(file_name)
             serialized_example = serialize_example(example)
             writer.write(serialized_example)
