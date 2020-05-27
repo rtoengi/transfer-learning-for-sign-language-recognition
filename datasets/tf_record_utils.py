@@ -4,14 +4,24 @@ import cv2
 import numpy as np
 import tensorflow as tf
 
-# from tensorflow.keras.applications.inception_v3 import preprocess_input
-from datasets.constants import DatasetType
+from datasets.constants import DatasetName, DatasetType
 from datasets.constants import _N_TIME_STEPS
-from datasets.msasl.constants import MSASL_TF_RECORDS_DIR
+# from tensorflow.keras.applications.inception_v3 import preprocess_input
+from datasets.utils import _tf_records_dir
 
 
-def tf_record_dataset(dataset_type: DatasetType, ordered=False):
-    path = f'{MSASL_TF_RECORDS_DIR}/{dataset_type.value}'
+def tf_record_dataset(dataset_name: DatasetName, dataset_type: DatasetType, ordered=False):
+    """Returns a `TFRecordDataset` of the requested dataset.
+
+    Arguments:
+        dataset_name: The name of the dataset.
+        dataset_type: The type of the dataset.
+        ordered: Whether the examples should be fetched in order.
+
+    Returns:
+        A `TFRecordDataset` of the requested dataset.
+    """
+    path = f'{_tf_records_dir(dataset_name)}/{dataset_type.value}'
     files = [f'{path}/{file}' for file in os.listdir(path)]
     num_parallel_reads = 1 if ordered else tf.data.experimental.AUTOTUNE
     dataset = tf.data.TFRecordDataset(files, num_parallel_reads=num_parallel_reads)

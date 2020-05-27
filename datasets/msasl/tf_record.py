@@ -8,7 +8,7 @@ import tensorflow as tf
 
 from datasets.constants import DatasetType, _N_TIME_STEPS, _TF_RECORD_SHARD_SIZE
 from datasets.constants import _FRAME_SIZE
-from datasets.msasl.constants import _MSASL_FILTERED_SPECS_DIR, _MSASL_VIDEOS_DIR, MSASL_TF_RECORDS_DIR
+from datasets.msasl.constants import _MSASL_FILTERED_SPECS_DIR, _MSASL_VIDEOS_DIR, _MSASL_TF_RECORDS_DIR
 from datasets.msasl.video_download import _extract_video_id
 from datasets.tf_record_utils import _bytes_feature, _int64_feature
 from datasets.utils import _crop_image_to_square
@@ -111,7 +111,7 @@ def write_tf_records():
         writer = None
         running_file_number = 0
         running_record_number = 0
-        Path(f'{MSASL_TF_RECORDS_DIR}/{dataset_type.value}').mkdir(exist_ok=True)
+        Path(f'{_MSASL_TF_RECORDS_DIR}/{dataset_type.value}').mkdir(exist_ok=True)
         for i, example in enumerate(dataset):
             if i % _TF_RECORD_SHARD_SIZE == 0:
                 if writer:
@@ -119,7 +119,7 @@ def write_tf_records():
                     logging.info(f'{running_record_number} records have been written to {file_name}.')
                     running_record_number = 0
                 running_file_number += 1
-                file_name = f'{MSASL_TF_RECORDS_DIR}/{dataset_type.value}/{dataset_type.value}_{running_file_number:02d}.tfrecord'
+                file_name = f'{_MSASL_TF_RECORDS_DIR}/{dataset_type.value}/{dataset_type.value}_{running_file_number:02d}.tfrecord'
                 writer = tf.io.TFRecordWriter(file_name)
             serialized_example = serialize_example(example)
             writer.write(serialized_example)

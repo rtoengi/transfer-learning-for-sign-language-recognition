@@ -1,6 +1,6 @@
 import cv2
 
-from datasets.constants import DatasetType
+from datasets.constants import DatasetName, DatasetType
 from datasets.tf_record_utils import tf_record_dataset, _parse_examples
 
 
@@ -11,7 +11,7 @@ def _display_images(images):
 
 
 def inspect_dataset():
-    dataset = tf_record_dataset(DatasetType.TRAIN)
+    dataset = tf_record_dataset(DatasetName.MSASL, DatasetType.TRAIN)
     dataset = dataset.batch(2)
     dataset = dataset.map(_parse_examples)
     for frames, labels, signers in dataset.take(1):
