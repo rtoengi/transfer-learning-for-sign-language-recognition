@@ -1,3 +1,6 @@
+# Number of classes
+N_CLASSES = 1000
+
 # Root directory of the `MS-ASL` dataset
 _MSASL_DIR = 'D:/datasets/msasl'
 

@@ -6,6 +6,8 @@ import tensorflow as tf
 
 from datasets.constants import DatasetName, DatasetType
 from datasets.constants import _N_TIME_STEPS
+from datasets.msasl.constants import N_CLASSES as MSASL_N_CLASSES
+from datasets.signum.constants import N_CLASSES as SIGNUM_N_CLASSES
 from datasets.utils import _tf_records_dir
 
 
@@ -74,8 +76,8 @@ def _decode_jpeg(bytestring):
 def _transform_frames_for_inspection(examples):
     """Transforms a batch of example frames to be consumed for inspection.
 
-    An individual frame is a 3D tensor consisting of RGB uint8 values within [0, 255] represented in the `channels_last`
-    data format ([height, width, channels]).
+    An individual frame is a 3D tensor consisting of RGB uint8 values within the range [0, 255] represented in the
+    `channels_last` data format ([height, width, channels]).
 
     Arguments:
         examples: A 5D tensor representing a batch of example frames in the [batch, frames, height, width, channels]
@@ -90,7 +92,7 @@ def _transform_frames_for_inspection(examples):
 def _transform_frames_for_model(examples):
     """Transforms a batch of example frames to be consumed by a model.
 
-    An individual frame is a 3D tensor consisting of RGB float32 values within [-1.0, 1.0] represented in the
+    An individual frame is a 3D tensor consisting of RGB float32 values within the range [-1.0, 1.0] represented in the
     `channels_last` data format ([height, width, channels]).
 
     Arguments:
@@ -117,6 +119,9 @@ _FEATURES = {
 def transform_for_inspection(examples):
     """Transforms a batch of examples to be consumed for inspection.
 
+    The returned frames are represented as RGB uint8 values within the range [0, 255], and the labels and signers are
+    represented as their corresponding indices.
+
     Arguments:
         examples: A batch of serialized `TFRecord` examples.
 
@@ -132,8 +137,11 @@ def transform_for_inspection(examples):
     return frames, labels, signers
 
 
-def transform_for_model(examples):
-    """Transforms a batch of examples to be consumed by a model.
+def transform_for_msasl_model(examples):
+    """Transforms a batch of `MS-ASL` dataset examples to be consumed by a model.
+
+    The returned frames are represented as RGB float32 values within the range [-1.0, 1.0], and the labels are one-hot
+    encoded with a depth of `datasets.msasl.constants.N_CLASSES`.
 
     Arguments:
         examples: A batch of serialized `TFRecord` examples.
@@ -144,6 +152,26 @@ def transform_for_model(examples):
     parsed_examples = tf.io.parse_example(examples, _FEATURES)
 
     frames = tf.py_function(_transform_frames_for_model, [parsed_examples['frames']], tf.float32)
-    labels = parsed_examples['label']
+    labels = tf.one_hot(parsed_examples['label'], MSASL_N_CLASSES)
+
+    return frames, labels
+
+
+def transform_for_signum_model(examples):
+    """Transforms a batch of `SIGNUM` dataset examples to be consumed by a model.
+
+    The returned frames are represented as RGB float32 values within the range [-1.0, 1.0], and the labels are one-hot
+    encoded with a depth of `datasets.signum.constants.N_CLASSES`.
+
+    Arguments:
+        examples: A batch of serialized `TFRecord` examples.
+
+    Returns:
+        A tuple of batches of frames and labels.
+    """
+    parsed_examples = tf.io.parse_example(examples, _FEATURES)
+
+    frames = tf.py_function(_transform_frames_for_model, [parsed_examples['frames']], tf.float32)
+    labels = tf.one_hot(parsed_examples['label'], SIGNUM_N_CLASSES)
 
     return frames, labels

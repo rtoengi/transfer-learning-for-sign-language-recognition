@@ -1,3 +1,6 @@
+# Number of classes
+N_CLASSES = 450
+
 # Root directory of the `SIGNUM` dataset
 _SIGNUM_DIR = 'D:/datasets/signum'
 
