@@ -1,6 +1,28 @@
-from datasets.constants import DatasetName
+import numpy as np
+
+from datasets.constants import DatasetName, _N_TIME_STEPS
 from datasets.msasl.constants import _MSASL_TF_RECORDS_DIR
 from datasets.signum.constants import _SIGNUM_TF_RECORDS_DIR
+
+
+def _frame_positions(start: int, end: int):
+    """Samples frame numbers in the range between `start` and `end`.
+
+    `_N_TIME_STEPS` number of samples are drawn uniformly in the range between `start` and `end`. If `_N_TIME_STEPS` is
+    greater than the range that is drawn from, then sampling is done with replacement. The samples are sorted in
+    ascending order.
+
+    Arguments:
+        start: The start frame number, inclusive.
+        end: The end frame number, inclusive.
+
+    Returns:
+        The sorted array of frame numbers between `start` and `end`.
+    """
+    range_ = end - start + 1
+    positions = np.random.choice(range_, _N_TIME_STEPS, replace=range_ < _N_TIME_STEPS) + start
+    positions.sort()
+    return positions
 
 
 def _crop_image_to_square(image, center_x_ratio=0.5, center_y_ratio=0.5):

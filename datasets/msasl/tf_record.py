@@ -3,35 +3,14 @@ import logging
 from pathlib import Path
 
 import cv2
-import numpy as np
 import tensorflow as tf
 
-from datasets.constants import DatasetType, _N_TIME_STEPS, _TF_RECORD_SHARD_SIZE
+from datasets.constants import DatasetType, _TF_RECORD_SHARD_SIZE
 from datasets.constants import _FRAME_SIZE
 from datasets.msasl.constants import _MSASL_FILTERED_SPECS_DIR, _MSASL_VIDEOS_DIR, _MSASL_TF_RECORDS_DIR
 from datasets.msasl.video_download import _extract_video_id
 from datasets.tf_record_utils import _bytes_feature, _int64_feature
-from datasets.utils import _crop_image_to_square
-
-
-def _frame_positions(start, end):
-    """Samples frame numbers in the range between `start` and `end`.
-
-    `_N_TIME_STEPS` number of samples are drawn uniformly in the range between `start` and `end`. If `_N_TIME_STEPS` is
-    greater than the range that is drawn from, then sampling is done with replacement. The samples are sorted in
-    ascending order.
-
-    Arguments:
-        start: The start frame number.
-        end: The end frame number.
-
-    Returns:
-        The sorted array of frame numbers between `start` and `end`.
-    """
-    range_ = end - start + 1
-    positions = np.random.choice(range_, _N_TIME_STEPS, replace=range_ < _N_TIME_STEPS) + start
-    positions.sort()
-    return positions
+from datasets.utils import _crop_image_to_square, _frame_positions
 
 
 def _center_ratios(box):
