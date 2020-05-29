@@ -30,7 +30,7 @@ def _center_ratios(box):
     return x, y
 
 
-def read_frames(example):
+def _read_frames(example):
     """Reads the individual frames from the corresponding YouTube video.
 
     A frame is encoded as a compressed JPEG image instead of an ndarray, as the latter consumes up to 10 times as much
@@ -57,7 +57,7 @@ def read_frames(example):
     return frames
 
 
-def serialize_example(example):
+def _serialize_example(example):
     """Serializes a dataset example in the `TFRecord` format.
 
     Arguments:
@@ -66,7 +66,7 @@ def serialize_example(example):
     Returns:
         The binary string representation of the `TFRecord`.
     """
-    frames = read_frames(example)
+    frames = _read_frames(example)
     feature = {
         'frames': _bytes_feature(frames),
         'label': _int64_feature([example['label']]),
@@ -100,7 +100,7 @@ def write_tf_records():
                 running_file_number += 1
                 file_name = f'{_MSASL_TF_RECORDS_DIR}/{dataset_type.value}/{dataset_type.value}_{running_file_number:02d}.tfrecord'
                 writer = tf.io.TFRecordWriter(file_name)
-            serialized_example = serialize_example(example)
+            serialized_example = _serialize_example(example)
             writer.write(serialized_example)
             running_record_number += 1
         if writer:

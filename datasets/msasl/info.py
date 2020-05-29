@@ -6,7 +6,7 @@ from datasets.msasl.constants import _MSASL_FILTERED_SPECS_DIR
 _LINE_WIDTH = 27
 
 
-def dataset_counts():
+def _dataset_counts():
     """Returns the sizes of the `MS-ASL` train, validation and test datasets.
 
     Returns:
@@ -22,7 +22,7 @@ def dataset_counts():
 
 def display_dataset_counts():
     """Displays the sizes of the `MS-ASL` train, validation and test datasets."""
-    counts = dataset_counts()
+    counts = _dataset_counts()
     print('MS-ASL dataset counts')
     print('=' * _LINE_WIDTH)
     for dataset_type in DatasetType:
