@@ -86,9 +86,10 @@ def write_tf_records():
     """
     signer_dirs = os.listdir(_SIGNUM_IMAGES_DIR)
     for signer, signer_dir in enumerate(signer_dirs):
-        path = f'{_SIGNUM_TF_RECORDS_DIR}/{_dataset_type_dir(signer)}'
+        dataset_type = _dataset_type_dir(signer)
+        path = f'{_SIGNUM_TF_RECORDS_DIR}/{dataset_type}'
         Path(path).mkdir(exist_ok=True)
-        file_name = f'{path}/signum_{signer + 1:02d}.tfrecord'
+        file_name = f'{path}/signum_{dataset_type}_{signer + 1:02d}.tfrecord'
         with tf.io.TFRecordWriter(file_name) as writer:
             running_record_number = 0
             example_dirs = os.listdir(f'{_SIGNUM_IMAGES_DIR}/{signer_dir}')

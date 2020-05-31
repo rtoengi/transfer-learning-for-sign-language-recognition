@@ -98,7 +98,7 @@ def write_tf_records():
                     logging.info(f'{running_record_number} records have been written to {file_name}.')
                     running_record_number = 0
                 running_file_number += 1
-                file_name = f'{_MSASL_TF_RECORDS_DIR}/{dataset_type.value}/{dataset_type.value}_{running_file_number:02d}.tfrecord'
+                file_name = f'{_MSASL_TF_RECORDS_DIR}/{dataset_type.value}/msasl_{dataset_type.value}_{running_file_number:02d}.tfrecord'
                 writer = tf.io.TFRecordWriter(file_name)
             serialized_example = _serialize_example(example)
             writer.write(serialized_example)
