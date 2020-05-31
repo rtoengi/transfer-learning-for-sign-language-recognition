@@ -33,6 +33,26 @@ def tf_record_dataset(dataset_name: DatasetName, dataset_type: DatasetType, orde
     return dataset
 
 
+def _dataset_counts(dataset_name: DatasetName):
+    """Returns the sizes of the `dataset_name` train, validation and test datasets.
+
+    Arguments:
+        dataset_name: The name of the dataset.
+
+    Returns:
+        A dictionary with an entry of the size for each of the train, validation and test datasets.
+    """
+    counts = {}
+    for dataset_type in DatasetType:
+        dataset = tf_record_dataset(dataset_name, dataset_type)
+        dataset = dataset.batch(64)
+        dataset = dataset.prefetch(1)
+        counts[dataset_type.value] = 0
+        for records in dataset:
+            counts[dataset_type.value] += len(records)
+    return counts
+
+
 def _bytes_feature(bytes_list):
     """Converts a list of bytestrings into a protocol buffer feature message.
 

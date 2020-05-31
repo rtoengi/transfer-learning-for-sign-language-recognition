@@ -1,6 +1,6 @@
 import numpy as np
 
-from datasets.constants import DatasetName, _N_TIME_STEPS
+from datasets.constants import DatasetName, DatasetType, _N_TIME_STEPS
 from datasets.msasl.constants import _MSASL_TF_RECORDS_DIR
 from datasets.signum.constants import _SIGNUM_TF_RECORDS_DIR
 
@@ -82,3 +82,15 @@ def _tf_records_dir(dataset_name: DatasetName):
         The absolute path to the directory storing the `TFRecord` files of the requested dataset.
     """
     return _TF_RECORDS_DIR_DICT[dataset_name]
+
+
+def _display_dataset_counts(dataset_name: DatasetName, counts):
+    """Displays the sizes of the `dataset_name` train, validation and test datasets."""
+    line_width = 27
+    print(f'{dataset_name.name} dataset counts')
+    print('=' * line_width)
+    for dataset_type in DatasetType:
+        count = counts[dataset_type.value]
+        print(f"{dataset_type.name + ':':13s} {count:5d} ({count / sum(counts.values()) * 100:02.1f}%)")
+    print('=' * line_width)
+    print(f"{'Total:':13s} {sum(counts.values()):5d} (100%)")
