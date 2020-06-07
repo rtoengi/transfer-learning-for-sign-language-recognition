@@ -12,6 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+import numpy as np
+
+from tensorflow.keras.applications import InceptionV3
 from tensorflow.python.keras import layers
 from tensorflow.python.keras.engine import training
 
@@ -206,3 +209,27 @@ def _conv3d_bn(x, filters, num_step, num_row, num_col, padding='same', strides=(
     x = layers.Activation('relu', name=name)(x)
 
     return x
+
+
+def load_inflated_imagenet_weights(target_model):
+    source_model = InceptionV3(include_top=True, weights='imagenet')
+    for i, source_layer in enumerate(source_model.layers):
+        target_layer = target_model.layers[i]
+        if 'conv' in source_layer.name:
+            _copy_conv_weights(source_layer, target_layer)
+        elif 'batch_normalization' in source_layer.name:
+            _copy_batch_normalization_weights(source_layer, target_layer)
+
+
+def _copy_conv_weights(source_layer, target_layer):
+    target_shape = target_layer.get_weights()[0].shape
+    depth = target_shape[0]
+    weights = np.copy(source_layer.get_weights()[0]) / depth
+    reps = np.ones(len(target_shape), dtype=int)
+    reps[0] = depth
+    weights = np.tile(weights, reps)
+    target_layer.set_weights([weights])
+
+
+def _copy_batch_normalization_weights(source_layer, target_layer):
+    target_layer.set_weights(source_layer.get_weights().copy())
