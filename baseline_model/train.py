@@ -8,7 +8,7 @@ from base_model.inflated_3d_inception_v3 import Inflated3DInceptionV3, load_infl
 from datasets.constants import DatasetName, DatasetType
 from datasets.signum.constants import N_CLASSES
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
-from utils import save_history
+from training.utils import save_history
 
 
 def create_training_run_dir():
