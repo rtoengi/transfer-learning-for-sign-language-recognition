@@ -20,7 +20,7 @@ def create_training_run_dir():
 
 def _train_dataset():
     train_dataset = tf_record_dataset(DatasetName.SIGNUM, DatasetType.TRAIN)
-    train_dataset = train_dataset.shuffle(1024)
+    train_dataset = train_dataset.shuffle(2048)
     train_dataset = train_dataset.batch(32)
     train_dataset = train_dataset.map(transform_for_signum_model)
     return train_dataset.prefetch(2)
