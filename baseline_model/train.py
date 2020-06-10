@@ -1,4 +1,3 @@
-from datetime import datetime
 from pathlib import Path
 
 from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -8,14 +7,7 @@ from base_model.inflated_3d_inception_v3 import Inflated3DInceptionV3, load_infl
 from datasets.constants import DatasetName, DatasetType
 from datasets.signum.constants import N_CLASSES
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
-from training.utils import save_history
-
-
-def create_training_run_dir():
-    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    path = f'training_runs/{timestamp}'
-    Path(path).mkdir(parents=True)
-    return path
+from training.utils import save_history, create_training_runs_dir
 
 
 def _train_dataset():
@@ -41,14 +33,14 @@ def _model():
     return model
 
 
-def _callbacks(path):
+def _callbacks(path: Path):
     early_stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=1)
-    filepath = f'{path}/model'
+    filepath = str(path / 'model')
     model_checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True)
     return [early_stopping, model_checkpoint]
 
 
-def train(path):
+def train(path: Path):
     train_dataset = _train_dataset()
     validation_dataset = _validation_dataset()
     callbacks = _callbacks(path)
@@ -58,6 +50,6 @@ def train(path):
 
 
 if __name__ == '__main__':
-    path = create_training_run_dir()
+    path = create_training_runs_dir(Path())
     history = train(path)
     save_history(history, path)
