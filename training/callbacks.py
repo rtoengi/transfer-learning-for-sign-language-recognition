@@ -3,8 +3,7 @@ from pathlib import Path
 from tensorflow.keras.callbacks import Callback
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 
-from plotting.constants import Metric
-from training.constants import _MODEL_CHECKPOINT_DIR
+from training.constants import Metric, _MODEL_CHECKPOINT_DIR
 
 
 class ThresholdStopping(Callback):
@@ -44,28 +43,28 @@ class ThresholdStopping(Callback):
                 self.model.stop_training = True
 
 
-def early_stopping(metric, patience):
+def early_stopping(metric: Metric, patience):
     """Returns an EarlyStopping callback.
 
     Arguments:
-        metric: A string representing the metric the model is evaluated against.
+        metric: A Metric value the model is evaluated against.
         patience: The number of epochs with no improvement after which the training will be stopped.
 
     Returns:
         An EarlyStopping callback.
     """
-    return EarlyStopping(monitor=metric, patience=patience, verbose=1)
+    return EarlyStopping(monitor=metric.value, patience=patience, verbose=1)
 
 
-def model_checkpoint(metric, path: Path):
+def model_checkpoint(metric: Metric, path: Path):
     """Returns a ModelCheckpoint callback.
 
     Arguments:
-        metric: A string representing the metric the model is evaluated against.
+        metric: A Metric value the model is evaluated against.
         path: A Path object pointing to the directory where the model checkpoint will be stored.
 
     Returns:
         A ModelCheckpoint callback.
     """
     filepath = str(path / _MODEL_CHECKPOINT_DIR)
-    return ModelCheckpoint(filepath, monitor=metric, verbose=1, save_best_only=True)
+    return ModelCheckpoint(filepath, monitor=metric.value, verbose=1, save_best_only=True)
