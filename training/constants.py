@@ -13,7 +13,7 @@ class Metric(Enum):
 _TRAINING_RUNS_DIR = 'training_runs'
 
 # Name of the directory where a model checkpoint will be stored
-_MODEL_CHECKPOINT_DIR = 'model'
+_SAVED_MODEL_DIR = 'model'
 
 # Name of the file that stores the training history of a training run
 _HISTORY_FILE_NAME = 'history.pkl'
