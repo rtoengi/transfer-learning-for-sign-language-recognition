@@ -6,7 +6,8 @@ from base_model.inflated_3d_inception_v3 import Inflated3DInceptionV3, load_infl
 from datasets.constants import DatasetName, DatasetType
 from datasets.signum.constants import N_CLASSES
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
-from training.utils import save_history, create_training_runs_dir, callback_list
+from training.callbacks import early_stopping, model_checkpoint
+from training.utils import save_history, create_training_runs_dir
 
 
 def _train_dataset():
@@ -35,9 +36,10 @@ def _model():
 def train(path: Path):
     train_dataset = _train_dataset()
     validation_dataset = _validation_dataset()
-    callbacks = callback_list(path, 'val_loss', 10)
+    es = early_stopping('val_loss', 15)
+    mc = model_checkpoint('val_loss', path)
     model = _model()
-    history = model.fit(train_dataset, validation_data=validation_dataset, epochs=100, callbacks=callbacks)
+    history = model.fit(train_dataset, validation_data=validation_dataset, epochs=100, callbacks=[es, mc])
     return history.history
 
 
