@@ -1,43 +1,28 @@
+import logging
 from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
 from pandas import DataFrame
-from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
+from tensorflow.keras import models
+from tensorflow.keras.models import Model
 
-from training.constants import _TRAINING_RUNS_DIR, _MODEL_CHECKPOINT_DIR, _HISTORY_FILE_NAME
+from training.constants import _TRAINING_RUNS_DIR, _SAVED_MODEL_DIR, _HISTORY_FILE_NAME
 
 
 def create_training_runs_dir(base_path: Path):
-    """Creates the directory where the training runs will be stored.
+    """Creates the directory where the training runs will be saved.
 
     Arguments:
-        base_path: A Path object pointing to the base directory where the training runs will be stored.
+        base_path: A Path object pointing to the base directory where the training runs will be saved.
 
     Returns:
         A Path object pointing to the directory of the training runs.
     """
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    path = (base_path / _TRAINING_RUNS_DIR / timestamp).absolute()
-    path.mkdir(parents=True)
-    return path
-
-
-def callback_list(model_checkpoint_path: Path, metric, early_stopping_patience):
-    """Returns an `EarlyStopping` and a `ModelCheckpoint` callback.
-
-    Arguments:
-        model_checkpoint_path: A Path object pointing to the directory where a model checkpoint will be stored.
-        metric: A string representing the metric the model is evaluated against.
-        early_stopping_patience: The number of epochs with no improvement after which the training will be stopped.
-
-    Returns:
-        A list containing an `EarlyStopping` and a `ModelCheckpoint` callback.
-    """
-    early_stopping = EarlyStopping(monitor=metric, patience=early_stopping_patience, verbose=1)
-    filepath = str(model_checkpoint_path / _MODEL_CHECKPOINT_DIR)
-    model_checkpoint = ModelCheckpoint(filepath, monitor=metric, verbose=1, save_best_only=True)
-    return [early_stopping, model_checkpoint]
+    base_path = (base_path / _TRAINING_RUNS_DIR / timestamp).absolute()
+    base_path.mkdir(parents=True)
+    return base_path
 
 
 def save_dataframe(dataframe: DataFrame, path):
@@ -51,7 +36,7 @@ def save_dataframe(dataframe: DataFrame, path):
 
 
 def load_dataframe(path):
-    """Loads a DataFrame from a stored pickled object.
+    """Loads a DataFrame from a saved pickled object.
 
     Arguments:
         path: A string representing the path where the DataFrame will be loaded from.
@@ -66,7 +51,7 @@ def _history_path(path: Path):
     """Returns the path of the history file.
 
     Arguments:
-        path: A Path object pointing to the directory where the history file will be stored.
+        path: A Path object pointing to the directory where the history file will be saved.
 
     Returns:
         A Path object of the history file.
@@ -82,3 +67,41 @@ def save_history(history, path: Path):
         path: A Path object of the history file.
     """
     save_dataframe(pd.DataFrame(history), _history_path(path))
+
+
+def model_path(base_path: Path, training_run):
+    """Returns the path of the model of a given training run.
+
+    Arguments:
+        base_path: A Path object pointing to the base directory where the training run in located.
+        training_run: The name of the directory of the training run.
+
+    Returns:
+        The Path object pointing to the location of the model.
+    """
+    return base_path / _TRAINING_RUNS_DIR / training_run / _SAVED_MODEL_DIR
+
+
+def save_model(path: Path, model: Model):
+    """Saves a model to disk.
+
+    Arguments:
+        path: A Path object pointing to the directory where the model will be saved.
+        model: The model to be saved.
+    """
+    filepath = str(path / _SAVED_MODEL_DIR)
+    logging.basicConfig(level=logging.INFO)
+    logging.info(f'Saving model to {filepath}')
+    model.save(filepath)
+
+
+def load_model(path: Path):
+    """Loads a model from disk.
+
+    Arguments:
+        path: A Path object pointing to the directory from where the model will be loaded.
+
+    Returns:
+        The model loaded from disk.
+    """
+    return models.load_model(path)
