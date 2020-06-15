@@ -9,7 +9,7 @@ from core.utils import package_path
 from datasets.constants import DatasetName, DatasetType
 from datasets.signum.constants import N_CLASSES
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
-from training.callbacks import early_stopping, model_checkpoint
+from training.callbacks import model_checkpoint
 from training.constants import Metric
 from training.utils import create_training_runs_dir, model_path, load_model, save_history
 
@@ -47,10 +47,9 @@ def _model():
 def train(path: Path):
     train_dataset = _train_dataset()
     validation_dataset = _validation_dataset()
-    es = early_stopping(Metric.VAL_LOSS, 10)
     mc = model_checkpoint(Metric.VAL_LOSS, path)
     model = _model()
-    history = model.fit(train_dataset, validation_data=validation_dataset, epochs=100, callbacks=[es, mc])
+    history = model.fit(train_dataset, validation_data=validation_dataset, epochs=40, callbacks=[mc])
     return history.history
 
 
