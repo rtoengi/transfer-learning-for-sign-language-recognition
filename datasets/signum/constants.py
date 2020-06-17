@@ -1,3 +1,20 @@
+from enum import Enum, unique
+
+
+@unique
+class TrainDatasetSize(Enum):
+    """Enumeration of the different `SIGNUM` training dataset sizes.
+
+    Attributes:
+        SMALL: This dataset consists of a total of 1,800 training examples of 4 different signers.
+        MEDIUM: This dataset consists of a total of 3,600 training examples of 8 different signers.
+        LARGE: This dataset consists of a total of 7,200 training examples of 16 different signers.
+    """
+    SMALL = {'n_examples': 1800, 'signers': 4}
+    MEDIUM = {'n_examples': 3600, 'signers': 8}
+    LARGE = {'n_examples': 7200, 'signers': 16}
+
+
 # Number of classes
 N_CLASSES = 450
 
