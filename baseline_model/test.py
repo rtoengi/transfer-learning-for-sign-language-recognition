@@ -31,6 +31,6 @@ train_dataset_size = TrainDatasetSize.LARGE
 
 if __name__ == '__main__':
     loss, accuracy = test()
-    print(f"Test scores for the model trained on {train_dataset_size.value['n_examples']} examples of "
+    print(f"Test scores for the baseline model trained on {train_dataset_size.value['n_examples']} examples of "
           f"{train_dataset_size.value['signers']} signers:")
     print(f'Loss: {loss}, accuracy: {accuracy}')
