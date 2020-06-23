@@ -1,15 +1,10 @@
 from pathlib import Path
 
 from datasets.constants import DatasetName, DatasetType
-from datasets.signum.constants import TrainDatasetSize
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
+from finetuned_model.constants import TRAINING_RUNS
+from testing.utils import save_scores, scores_file_exists, display_scores
 from training.utils import model_path, load_model
-
-TRAINING_RUNS = {
-    TrainDatasetSize.LARGE: '20200616_150747',
-    TrainDatasetSize.MEDIUM: '20200617_073349',
-    TrainDatasetSize.SMALL: '20200617_164302'
-}
 
 
 def _test_dataset():
@@ -20,17 +15,19 @@ def _test_dataset():
 
 
 def test():
+    losses, accuracies = [], []
     test_dataset = _test_dataset()
-    path = model_path(Path(), TRAINING_RUNS[train_dataset_size])
-    model = load_model(path)
-    return model.evaluate(test_dataset)
+    for training_run in TRAINING_RUNS:
+        path = model_path(Path(), training_run)
+        model = load_model(path)
+        loss, accuracy = model.evaluate(test_dataset)
+        losses.append(loss)
+        accuracies.append(accuracy)
+    return losses, accuracies
 
-
-# Configure here the size of the train dataset the model has been trained on
-train_dataset_size = TrainDatasetSize.LARGE
 
 if __name__ == '__main__':
-    loss, accuracy = test()
-    print(f"Test scores for the fine-tuned model trained on {train_dataset_size.value['n_examples']} examples of "
-          f"{train_dataset_size.value['signers']} signers:")
-    print(f'Loss: {loss}, accuracy: {accuracy}')
+    if not scores_file_exists(Path()):
+        losses, accuracies = test()
+        save_scores(losses, accuracies, Path())
+    display_scores(Path())
