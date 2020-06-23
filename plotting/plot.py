@@ -22,5 +22,21 @@ def loss_accuracy_learning_curves(df: DataFrame, model_type, dataset_size):
     for i in range(2):
         sns.lineplot(data=df[_LOSS_ACCURACY_COLUMNS[i]], markers=['o', 'o'], ax=axes[i])
         axes[i].set(title=' ', xlabel='Epoch', ylabel=_LABELS['loss_accuracy'][i])
-        axes[i].legend(title='Dataset', labels=('Train', 'Validation'))
+        axes[i].legend(title='Dataset', labels=['Train', 'Validation'])
+    fig.show()
+
+
+def loss_accuracy_learning_curves_without_validation(df: DataFrame):
+    """Plots the learning curves of the loss and accuracy for the train dataset.
+
+    Arguments:
+        df: The DataFrame of a history file.
+    """
+    _start_index_from_one(df)
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12.8, 4.8))
+    fig.suptitle(_LABELS['learning_curves_without_validation'])
+    for i in range(2):
+        sns.lineplot(data=df[_LOSS_ACCURACY_COLUMNS[i][0]], marker='o', ax=axes[i])
+        axes[i].set(xticks=df.index, title=' ', xlabel='Epoch', ylabel=_LABELS['loss_accuracy'][i])
+        axes[i].legend(title='Dataset', labels=['Train'])
     fig.show()
