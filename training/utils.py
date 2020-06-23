@@ -25,14 +25,14 @@ def create_training_runs_dir(base_path: Path):
     return base_path
 
 
-def save_dataframe(dataframe: DataFrame, path):
+def save_dataframe(df: DataFrame, path):
     """Saves a DataFrame as a pickled object.
 
     Arguments:
-        dataframe: The DataFrame to be saved.
+        df: The DataFrame to be saved.
         path: A string representing the path where the DataFrame will be saved.
     """
-    dataframe.to_pickle(path)
+    df.to_pickle(path)
 
 
 def load_dataframe(path):
@@ -47,16 +47,17 @@ def load_dataframe(path):
     return pd.read_pickle(path)
 
 
-def _history_path(path: Path):
-    """Returns the path of the history file.
+def history_path(base_path: Path, training_run):
+    """Returns the path of the history file of a given training run.
 
     Arguments:
-        path: A Path object pointing to the directory where the history file will be saved.
+        base_path: A Path object pointing to the base directory where the training run is located.
+        training_run: The name of the directory of the training run.
 
     Returns:
         A Path object of the history file.
     """
-    return path / _HISTORY_FILE_NAME
+    return base_path / _TRAINING_RUNS_DIR / training_run / _HISTORY_FILE_NAME
 
 
 def save_history(history, path: Path):
@@ -66,14 +67,14 @@ def save_history(history, path: Path):
         history: The history of a training run to be saved.
         path: A Path object of the history file.
     """
-    save_dataframe(pd.DataFrame(history), _history_path(path))
+    save_dataframe(pd.DataFrame(history), path / _HISTORY_FILE_NAME)
 
 
 def model_path(base_path: Path, training_run):
     """Returns the path of the model of a given training run.
 
     Arguments:
-        base_path: A Path object pointing to the base directory where the training run in located.
+        base_path: A Path object pointing to the base directory where the training run is located.
         training_run: The name of the directory of the training run.
 
     Returns:
