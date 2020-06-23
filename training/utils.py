@@ -20,9 +20,9 @@ def create_training_runs_dir(base_path: Path):
         A Path object pointing to the directory of the training runs.
     """
     timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-    base_path = (base_path / _TRAINING_RUNS_DIR / timestamp).absolute()
-    base_path.mkdir(parents=True)
-    return base_path
+    path = (base_path / _TRAINING_RUNS_DIR / timestamp).absolute()
+    path.mkdir(parents=True)
+    return path
 
 
 def save_dataframe(df: DataFrame, path):
