@@ -1,14 +1,9 @@
 from pathlib import Path
 
+from finetuned_model.constants import TRAINING_RUNS
 from plotting.plot import loss_accuracy_learning_curves
 from plotting.utils import training_run_prefix
 from training.utils import history_path, load_dataframe
-
-TRAINING_RUNS = [
-    'large_dataset/20200616_150747',
-    'medium_dataset/20200617_073349',
-    'small_dataset/20200617_164302'
-]
 
 
 def plot_learning_curves():
