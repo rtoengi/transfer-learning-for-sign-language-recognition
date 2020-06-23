@@ -2,8 +2,8 @@ from pathlib import Path
 
 from baseline_model.constants import TRAINING_RUNS
 from datasets.constants import DatasetName, DatasetType
-from datasets.signum.constants import TrainDatasetSize
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
+from testing.utils import save_scores, scores_file_exists, display_scores
 from training.utils import model_path, load_model
 
 
@@ -27,8 +27,7 @@ def test():
 
 
 if __name__ == '__main__':
-    losses, accuracies = test()
-    # loss, accuracy = test()
-    # print(f"Test scores for the baseline model trained on {train_dataset_size.value['n_examples']} examples of "
-    #       f"{train_dataset_size.value['signers']} signers:")
-    # print(f'Loss: {loss}, accuracy: {accuracy}')
+    if not scores_file_exists(Path()):
+        losses, accuracies = test()
+        save_scores(losses, accuracies, Path())
+    display_scores(Path())
