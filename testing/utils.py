@@ -21,7 +21,7 @@ def _create_testing_dir(base_path: Path):
     return path
 
 
-def _scores_file_path(base_path: Path):
+def scores_file_path(base_path: Path):
     """Returns the path of the scores file.
 
     Arguments:
@@ -42,7 +42,7 @@ def scores_file_exists(base_path: Path):
     Returns:
         Whether or not a scores file exists.
     """
-    path = _scores_file_path(base_path)
+    path = scores_file_path(base_path)
     return path.is_file()
 
 
@@ -68,6 +68,6 @@ def display_scores(base_path: Path):
     Arguments:
         base_path: A Path object pointing to the base directory where the testing artifacts are located.
     """
-    path = _scores_file_path(base_path)
+    path = scores_file_path(base_path)
     df = load_dataframe(path)
     print(df)
