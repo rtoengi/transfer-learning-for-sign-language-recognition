@@ -5,12 +5,12 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import SGD
 
 import pretrained_model as pretrained_model_package
+from core.constants import Metric
 from core.utils import package_path
 from datasets.constants import DatasetName, DatasetType
 from datasets.signum.constants import N_CLASSES
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
 from training.callbacks import model_checkpoint
-from training.constants import Metric
 from training.utils import create_training_runs_dir, model_path, load_model, save_history
 
 

@@ -3,11 +3,11 @@ from pathlib import Path
 from tensorflow.keras.optimizers import SGD
 
 from base_model.inflated_3d_inception_v3 import Inflated3DInceptionV3, load_inflated_imagenet_weights
+from core.constants import Metric
 from datasets.constants import DatasetName, DatasetType
 from datasets.signum.constants import N_CLASSES
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
 from training.callbacks import model_checkpoint
-from training.constants import Metric
 from training.utils import save_history, create_training_runs_dir
 
 

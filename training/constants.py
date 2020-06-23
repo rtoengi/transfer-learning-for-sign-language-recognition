@@ -1,14 +1,3 @@
-from enum import unique, Enum
-
-
-@unique
-class Metric(Enum):
-    LOSS = 'loss'
-    ACCURACY = 'accuracy'
-    VAL_LOSS = 'val_loss'
-    VAL_ACCURACY = 'val_accuracy'
-
-
 # Name of the directory where the artifacts of a training run will be saved
 _TRAINING_RUNS_DIR = 'training_runs'
 

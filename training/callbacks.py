@@ -3,7 +3,8 @@ from pathlib import Path
 from tensorflow.keras.callbacks import Callback
 from tensorflow.python.keras.callbacks import EarlyStopping, ModelCheckpoint
 
-from training.constants import Metric, _SAVED_MODEL_DIR
+from core.constants import Metric
+from training.constants import _SAVED_MODEL_DIR
 
 
 class ThresholdStopping(Callback):

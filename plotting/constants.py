@@ -1,4 +1,4 @@
-from training.constants import Metric
+from core.constants import Metric
 
 # Dictionary of the labels used in plots
 _LABELS = {
