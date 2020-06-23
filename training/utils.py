@@ -3,10 +3,10 @@ from datetime import datetime
 from pathlib import Path
 
 import pandas as pd
-from pandas import DataFrame
 from tensorflow.keras import models
 from tensorflow.keras.models import Model
 
+from core.utils import save_dataframe
 from training.constants import _TRAINING_RUNS_DIR, _SAVED_MODEL_DIR, _HISTORY_FILE_NAME
 
 
@@ -23,28 +23,6 @@ def create_training_runs_dir(base_path: Path):
     path = (base_path / _TRAINING_RUNS_DIR / timestamp).absolute()
     path.mkdir(parents=True)
     return path
-
-
-def save_dataframe(df: DataFrame, path):
-    """Saves a DataFrame as a pickled object.
-
-    Arguments:
-        df: The DataFrame to be saved.
-        path: A string representing the path where the DataFrame will be saved.
-    """
-    df.to_pickle(path)
-
-
-def load_dataframe(path):
-    """Loads a DataFrame from a saved pickled object.
-
-    Arguments:
-        path: A string representing the path where the DataFrame will be loaded from.
-
-    Returns:
-        The loaded DataFrame.
-    """
-    return pd.read_pickle(path)
 
 
 def history_path(base_path: Path, training_run):

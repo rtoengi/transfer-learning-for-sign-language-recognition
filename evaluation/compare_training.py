@@ -5,12 +5,12 @@ import pandas as pd
 import baseline_model as baseline_model_package
 import finetuned_model as finetuned_model_package
 from baseline_model.constants import TRAINING_RUNS as BASELINE_TRAINING_RUNS
-from core.utils import package_path
+from core.utils import package_path, load_dataframe
 from finetuned_model.constants import TRAINING_RUNS as FINETUNED_TRAINING_RUNS
 from plotting.constants import BASELINE_FINETUNED_COLUMNS
 from plotting.plot import compare_training_plot
 from training.constants import Metric
-from training.utils import history_path, load_dataframe
+from training.utils import history_path
 
 
 def dataframe(baseline_training_run, finetuned_training_run):
