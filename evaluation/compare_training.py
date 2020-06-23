@@ -8,7 +8,7 @@ from baseline_model.constants import TRAINING_RUNS as BASELINE_TRAINING_RUNS
 from core.constants import Metric
 from core.utils import package_path, load_dataframe
 from finetuned_model.constants import TRAINING_RUNS as FINETUNED_TRAINING_RUNS
-from plotting.constants import BASELINE_FINETUNED_COLUMNS
+from plotting.constants import COMPARE_TRAINING_COLUMNS
 from plotting.plot import compare_training_plot
 from training.utils import history_path
 
@@ -20,7 +20,7 @@ def dataframe(baseline_training_run, finetuned_training_run):
     finetuned_df = load_dataframe(path)
     return pd.concat([baseline_df[Metric.ACCURACY.value], finetuned_df[Metric.ACCURACY.value],
                       baseline_df[Metric.VAL_ACCURACY.value], finetuned_df[Metric.VAL_ACCURACY.value]], axis=1,
-                     keys=list(itertools.chain(*BASELINE_FINETUNED_COLUMNS)))
+                     keys=list(itertools.chain(*COMPARE_TRAINING_COLUMNS)))
 
 
 def compare_training():

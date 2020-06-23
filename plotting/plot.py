@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pandas import DataFrame
 
-from plotting.constants import _LABELS, _LOSS_ACCURACY_COLUMNS, BASELINE_FINETUNED_COLUMNS
+from plotting.constants import _LABELS, _LOSS_ACCURACY_COLUMNS, COMPARE_TRAINING_COLUMNS
 from plotting.utils import _start_index_from_one
 
 sns.set()
@@ -49,7 +49,7 @@ def compare_training_plot(df: DataFrame):
     _start_index_from_one(df)
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12.8, 4.8))
     for i in range(2):
-        sns.lineplot(data=df[BASELINE_FINETUNED_COLUMNS[i]], markers=['o', 'o'], ax=axes[i])
+        sns.lineplot(data=df[COMPARE_TRAINING_COLUMNS[i]], markers=['o', 'o'], ax=axes[i])
         axes[i].set(title=f"{_LABELS['train_validation'][i]} dataset", xlabel='Epoch', ylabel='Accuracy')
         axes[i].legend(title='Model', labels=['Baseline', 'Fine-tuned'])
     fig.show()

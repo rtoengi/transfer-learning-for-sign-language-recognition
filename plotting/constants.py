@@ -13,7 +13,7 @@ _LOSS_ACCURACY_COLUMNS = [
 ]
 
 # List of the columns used in the compare training plot
-BASELINE_FINETUNED_COLUMNS = [
+COMPARE_TRAINING_COLUMNS = [
     ['baseline_accuracy', 'finetuned_accuracy'],
     ['baseline_val_accuracy', 'finetuned_val_accuracy']
 ]
