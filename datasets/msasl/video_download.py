@@ -53,7 +53,7 @@ def _downloaded_video_ids():
 def _download_video(url):
     """Downloads a YouTube video at `url`.
 
-    The video is stored into the `_MSASL_VIDEOS_DIR` directory.
+    The video is saved into the `_MSASL_VIDEOS_DIR` directory.
 
     Arguments:
         url: A string representing a YouTube URL.

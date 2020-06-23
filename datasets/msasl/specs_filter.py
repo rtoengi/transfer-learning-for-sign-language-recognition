@@ -9,7 +9,7 @@ def create_filtered_specs():
     """Filters those rows from the original `MS-ASL` dataset specification files, for which the corresponding videos
     could not be downloaded.
 
-    Stores the filtered train, validation and test dataset specification files into the `_MSASL_FILTERED_SPECS_DIR`
+    Saves the filtered train, validation and test dataset specification files into the `_MSASL_FILTERED_SPECS_DIR`
     directory.
     """
     videos = _downloaded_video_ids()

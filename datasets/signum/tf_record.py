@@ -81,7 +81,7 @@ def _serialize_example(example_path, label, signer):
 def write_tf_records():
     """Creates the `TFRecord` files of the `SIGNUM` train, validation and test datasets.
 
-    The `TFRecord` files of the train, validation and test datasets are stored into corresponding subdirectories inside
+    The `TFRecord` files of the train, validation and test datasets are saved into corresponding subdirectories inside
     the `_SIGNUM_TF_RECORDS_DIR` directory. There is one `TFRecord` file for each signer.
     """
     signer_dirs = os.listdir(_SIGNUM_IMAGES_DIR)

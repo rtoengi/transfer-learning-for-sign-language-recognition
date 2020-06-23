@@ -79,7 +79,7 @@ def _serialize_example(example):
 def write_tf_records():
     """Creates the `TFRecord` files of the `MS-ASL` train, validation and test datasets.
 
-    The `TFRecord` files of the train, validation and test datasets are stored into corresponding subdirectories inside
+    The `TFRecord` files of the train, validation and test datasets are saved into corresponding subdirectories inside
     the `MSASL_TF_RECORDS_DIR` directory. The examples of each of the train, validation and test datasets are sharded
     into multiple `TFRecord` files. The number of examples a single `TFRecord` file contains is set by the
     `_TF_RECORD_SHARD_SIZE` constant.

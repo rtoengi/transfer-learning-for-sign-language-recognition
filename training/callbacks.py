@@ -61,7 +61,7 @@ def model_checkpoint(metric: Metric, path: Path):
 
     Arguments:
         metric: A Metric value the model is evaluated against.
-        path: A Path object pointing to the directory where the model checkpoint will be stored.
+        path: A Path object pointing to the directory where the model checkpoint will be saved.
 
     Returns:
         A ModelCheckpoint callback.
