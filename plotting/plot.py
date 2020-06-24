@@ -86,3 +86,18 @@ def test_scores_improvement_plot(df: DataFrame):
         axes[i].set(yticks=yticks, title=f"{_LABELS['loss_accuracy'][i]} improvement", xlabel='Dataset size',
                     ylabel=_LABELS['loss_accuracy'][i])
     fig.show()
+
+
+def dataset_size_learning_curves_plot(df: DataFrame):
+    """Plots the train and validation accuracies of the baseline models for each of the different dataset sizes.
+
+    Arguments:
+        df: The DataFrame holding the data of the train and validation accuracies for the different dataset sizes.
+    """
+    ax = sns.lineplot(data=df, markers=['o', 'o'])
+    xticklabels = reversed(_LABELS['dataset_sizes'])
+    yticks = np.linspace(0, 1, 11)
+    ax.set(xticks=df.index, xticklabels=xticklabels, yticks=yticks, title='Dataset size learning curves',
+           xlabel='Dataset size', ylabel='Accuracy')
+    ax.legend(title='Dataset', labels=['Train', 'Validation'], loc='lower right')
+    plt.show()
