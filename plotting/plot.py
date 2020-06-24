@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
 from pandas import DataFrame
 
@@ -68,4 +69,20 @@ def compare_test_scores_plot(df: DataFrame):
         axes[i].set(xticks=df.index, title=f"{_LABELS['loss_accuracy'][i]} comparison", xlabel='Dataset size',
                     ylabel=_LABELS['loss_accuracy'][i])
         axes[i].legend(title='Model', labels=['Baseline', 'Fine-tuned'])
+    fig.show()
+
+
+def test_scores_improvement_plot(df: DataFrame):
+    """Plots the improvements of the losses and accuracies for each of the different dataset sizes.
+
+    Arguments:
+        df: The DataFrame of the merged test scores files of a baseline and a fine-tuned model.
+    """
+    df.columns = _LABELS['dataset_sizes']
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12.8, 4.8))
+    for i in range(2):
+        sns.barplot(data=df.iloc[[i]], ax=axes[i])
+        yticks = np.linspace(-1.2, 0, 7) if i == 0 else np.linspace(0, 0.22, 12)
+        axes[i].set(yticks=yticks, title=f"{_LABELS['loss_accuracy'][i]} improvement", xlabel='Dataset size',
+                    ylabel=_LABELS['loss_accuracy'][i])
     fig.show()
