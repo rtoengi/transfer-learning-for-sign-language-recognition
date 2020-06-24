@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pandas import DataFrame
 
-from plotting.constants import _LABELS, _LOSS_ACCURACY_COLUMNS, COMPARE_TRAINING_COLUMNS
+from plotting.constants import _LABELS, _LOSS_ACCURACY_COLUMNS, COMPARE_TRAINING_COLUMNS, COMPARE_TEST_SCORES_COLUMNS
 from plotting.utils import _start_index_from_one
 
 sns.set()
@@ -51,5 +51,21 @@ def compare_training_plot(df: DataFrame):
     for i in range(2):
         sns.lineplot(data=df[COMPARE_TRAINING_COLUMNS[i]], markers=['o', 'o'], ax=axes[i])
         axes[i].set(title=f"{_LABELS['train_validation'][i]} dataset", xlabel='Epoch', ylabel='Accuracy')
+        axes[i].legend(title='Model', labels=['Baseline', 'Fine-tuned'])
+    fig.show()
+
+
+def compare_test_scores_plot(df: DataFrame):
+    """Plots the losses and accuracies of a baseline and a fine-tuned model for each of the different dataset sizes.
+
+    Arguments:
+        df: The DataFrame of the merged test scores files of a baseline and a fine-tuned model.
+    """
+    df.index = _LABELS['dataset_sizes']
+    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12.8, 4.8))
+    for i in range(2):
+        sns.lineplot(data=df[COMPARE_TEST_SCORES_COLUMNS[i]], markers=['o', 'o'], ax=axes[i])
+        axes[i].set(xticks=df.index, title=f"{_LABELS['loss_accuracy'][i]} comparison", xlabel='Dataset size',
+                    ylabel=_LABELS['loss_accuracy'][i])
         axes[i].legend(title='Model', labels=['Baseline', 'Fine-tuned'])
     fig.show()
