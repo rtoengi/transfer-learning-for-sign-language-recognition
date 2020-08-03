@@ -157,8 +157,29 @@ def transform_for_inspection(examples):
     return frames, labels, signers
 
 
+def transform_for_prediction(examples):
+    """Transforms a batch of examples to be consumed for prediction.
+
+    The returned frames are represented as RGB float32 values within the range [-1.0, 1.0], and the labels and signers
+    are label encoded.
+
+    Arguments:
+        examples: A batch of serialized `TFRecord` examples.
+
+    Returns:
+        A tuple of batches of frames, labels and signers.
+    """
+    parsed_examples = tf.io.parse_example(examples, _FEATURES)
+
+    frames = tf.py_function(_transform_frames_for_model, [parsed_examples['frames']], tf.float32)
+    labels = parsed_examples['label']
+    signers = parsed_examples['signer']
+
+    return frames, labels, signers
+
+
 def transform_for_msasl_model(examples):
-    """Transforms a batch of `MS-ASL` dataset examples to be consumed by a model.
+    """Transforms a batch of `MS-ASL` dataset examples to be consumed for training.
 
     The returned frames are represented as RGB float32 values within the range [-1.0, 1.0], and the labels are one-hot
     encoded with a depth of `datasets.msasl.constants.N_CLASSES`.
@@ -178,7 +199,7 @@ def transform_for_msasl_model(examples):
 
 
 def transform_for_signum_model(examples):
-    """Transforms a batch of `SIGNUM` dataset examples to be consumed by a model.
+    """Transforms a batch of `SIGNUM` dataset examples to be consumed for training.
 
     The returned frames are represented as RGB float32 values within the range [-1.0, 1.0], and the labels are one-hot
     encoded with a depth of `datasets.signum.constants.N_CLASSES`.
