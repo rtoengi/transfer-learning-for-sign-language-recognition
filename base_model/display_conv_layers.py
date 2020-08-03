@@ -7,7 +7,7 @@ def display_conv_layers():
     for i, layer in enumerate(model.layers):
         if 'conv' not in layer.name:
             continue
-        print(i, layer.name, layer.output.shape)
+        print('%-5d %-11s %s' % (i, layer.name, layer.output.shape))
 
 
 if __name__ == '__main__':
