@@ -10,6 +10,7 @@ from core.utils import package_path
 from datasets.constants import DatasetName, DatasetType
 from datasets.signum.constants import N_CLASSES
 from datasets.tf_record_utils import tf_record_dataset, transform_for_signum_model
+from pretrained_model.constants import TRAINING_RUN as PRETRAINED_MODEL_TRAINING_RUN
 from training.callbacks import model_checkpoint
 from training.utils import create_training_runs_dir, model_path, load_model, save_history
 
@@ -52,8 +53,6 @@ def train(path: Path):
     history = model.fit(train_dataset, validation_data=validation_dataset, epochs=40, callbacks=[mc])
     return history.history
 
-
-PRETRAINED_MODEL_TRAINING_RUN = '20200612_235400'
 
 if __name__ == '__main__':
     path = create_training_runs_dir(Path())

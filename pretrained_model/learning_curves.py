@@ -2,9 +2,8 @@ from pathlib import Path
 
 from core.utils import load_dataframe
 from plotting.plot import loss_accuracy_without_validation_plot
+from pretrained_model.constants import TRAINING_RUN
 from training.utils import history_path
-
-TRAINING_RUN = '20200612_235400'
 
 
 def plot_learning_curves():
