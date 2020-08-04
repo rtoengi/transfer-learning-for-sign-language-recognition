@@ -1,3 +1,5 @@
+import math
+
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
@@ -101,3 +103,24 @@ def dataset_size_learning_curves_plot(df: DataFrame):
            xlabel='Dataset size', ylabel='Accuracy')
     ax.legend(title='Dataset', labels=['Train', 'Validation'], loc='lower right')
     plt.show()
+
+
+def feature_maps_plot(feature_maps, path, n_cols=5):
+    """Saves the plots of the feature maps to disk.
+
+    Arguments:
+        feature_maps: The list of feature maps to plot and save.
+        path: A Path object pointing to the directory where the plots will be saved.
+        n_cols: The number of frames plotted in one row (defaults to 5).
+    """
+    n_time_steps = feature_maps.shape[1]
+    n_filters = feature_maps.shape[-1]
+    n_rows = math.ceil(n_time_steps / n_cols)
+    for n in range(n_filters):
+        for t in range(n_time_steps):
+            ax = plt.subplot(n_rows, n_cols, t + 1)
+            ax.set_xticks([])
+            ax.set_yticks([])
+            plt.imshow(feature_maps[0, t, :, :, n], cmap='gray')
+        plt.savefig(path / f'feature_map_{n:03d}.png')
+        plt.clf()
