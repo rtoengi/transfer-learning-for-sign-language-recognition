@@ -105,6 +105,20 @@ def dataset_size_learning_curves_plot(df: DataFrame):
     plt.show()
 
 
+def idealised_learning_curves_plot(df: DataFrame):
+    """Plots the idealised learning curves of the train and validation losses.
+
+    Arguments:
+        df: The DataFrame holding the data of the train and validation losses of an idealised case.
+    """
+    _start_index_from_one(df)
+    ax = sns.lineplot(data=df, markers=['o', 'o'])
+    yticks = np.linspace(0, 5, 6)
+    ax.set(yticks=yticks, xlabel='Epoch', ylabel='Loss')
+    ax.legend(title='Dataset', labels=['Train', 'Validation'])
+    plt.show()
+
+
 def feature_maps_plot(feature_maps, path, n_cols=5):
     """Saves the plots of the feature maps to disk.
 
